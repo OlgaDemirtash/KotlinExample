@@ -75,7 +75,12 @@ object UserHolder {
 
             }
         }
-        for(user in userList) {map[user.login] = user}
+        for(user in userList)
+            {
+                if (map[user.login] == null) map[user.login] = user
+                else throw IllegalArgumentException("A user with this email already exists")
+            }
+
         return userList
     }
 
