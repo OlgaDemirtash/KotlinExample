@@ -71,9 +71,11 @@ object UserHolder {
                 if (!fullName.isNullOrBlank()) {
                     userList.add(User.importUser(fullName, email, passwordHash, salt, phone))
                 }
+
+
             }
         }
-
+        for(user in userList) {map[user.login] = user}
         return userList
     }
 
