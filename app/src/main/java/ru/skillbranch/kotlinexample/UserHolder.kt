@@ -58,15 +58,18 @@ object UserHolder {
             val csv = it.split(";")
             if (csv.size > 4) {
                 val fullName = csv[0].trim()
-                val email = if (csv[1].isBlank()) null else csv[1].trim()
-                val phone = if (csv[3].isBlank()) null else csv[3].trim()
+                val email = if (csv[1].isNullOrBlank()) null else csv[1].trim()
+                val phone = if (csv[3].isNullOrBlank()) null else csv[3].trim()
                 val salt: String?
                 val passwordHash: String?
+                if(csv[2].isNullOrBlank()) {
+
+                    return@forEach } else {
                 csv[2].split(":")
                     .run {
                         salt = if (first().isNullOrBlank()) null else first().trim()
                         passwordHash = if (last().isNullOrBlank()) null else salt.plus(last().trim())
-                    }
+                    } }
 
                 if (!fullName.isNullOrBlank()) {
                     userList.add(User.importUser(fullName, email, passwordHash, salt, phone))
