@@ -50,6 +50,7 @@ object UserHolder {
 
 
 
+
     fun importUsers(list: List<String>): List<User> {
         var userList = mutableListOf<User>()
 
@@ -64,7 +65,7 @@ object UserHolder {
                 csv[2].split(":")
                     .run {
                         salt = if (first().isNullOrBlank()) null else first().trim()
-                        passwordHash = if (last().isNullOrBlank()) null else last().trim()
+                        passwordHash = if (last().isNullOrBlank()) null else salt.plus(last().trim())
                     }
 
                 if (!fullName.isNullOrBlank()) {
@@ -75,6 +76,8 @@ object UserHolder {
 
         return userList
     }
+
+
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun clearHolder() {
