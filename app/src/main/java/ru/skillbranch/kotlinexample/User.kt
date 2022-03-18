@@ -71,6 +71,19 @@ class User private constructor (
         accessCode = code
         sendAccessCodeToUser(rawPhone, code)
     }
+    //for csv
+    constructor(
+        firstName: String,
+        lastName: String?,
+        email: String?,
+        _salt: String,
+        hash: String,
+        phone: String?
+    ) : this(firstName, lastName, email = email, rawPhone = phone, meta = mapOf("src" to "csv")) {
+        println("Secondary csv constructor")
+        salt = _salt
+        passwordHash = hash
+    }
 
     init {
         println("First init block, primary constructor was called")
@@ -119,7 +132,18 @@ class User private constructor (
         return salt.plus(password).md5()
     }
 
+
+
     private fun String.md5(): String {
+        val md: MessageDigest = MessageDigest.getInstance("MD5")
+        val digest: ByteArray = md.digest(toByteArray())
+        val hexString: String = BigInteger(1, digest).toString(16)
+        return hexString.padStart(32, '0')
+
+
+    }
+
+    private fun String.frommd5(): String {
         val md: MessageDigest = MessageDigest.getInstance("MD5")
         val digest: ByteArray = md.digest(toByteArray())
         val hexString: String = BigInteger(1, digest).toString(16)
@@ -165,6 +189,18 @@ return when{
                     this.salt = salt
                     this.passwordHash = passwordHash ?: ""
                 }
+        }
+        fun parseCSV(csv: String): User {
+            val user = csv.split(";", ":")
+            val (firstName, lastName) = user[0].trim().fullNameToPair()
+            return User(
+                firstName,
+                lastName,
+                user[1].ifBlank{ null },
+                user[2],
+                user[3],
+                user[4].ifBlank{ null }
+            )
         }
         private fun String.fullNameToPair() : Pair<String, String?>{
             return this.split(" ")

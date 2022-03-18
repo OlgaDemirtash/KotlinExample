@@ -51,7 +51,7 @@ object UserHolder {
 
 
 
-    fun importUsers(list: List<String>): List<User> {
+/*    fun importUsers(list: List<String>): List<User> {
         var userList = mutableListOf<User>()
 
         list.forEach {
@@ -77,7 +77,9 @@ object UserHolder {
 
 
             }
-        }
+
+
+
         for(user in userList)
             {
                 if (map[user.login] == null) map[user.login] = user
@@ -86,7 +88,16 @@ object UserHolder {
 
         return userList
     }
+     }*/
 
+
+    fun importUsers(list: List<String>): List<User> {
+        return list.map {
+            User.parseCSV(it).also {user ->
+                map[user.login] = user
+            }
+        }
+    }
 
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
